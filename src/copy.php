@@ -16,7 +16,7 @@ function opengraph($atts, $content = null) {
 
     //require_once('./code/FaviconGrabber/get-fav.php');
 
-    //Variablen "deklarieren" und bereinigen
+    //Declare" and clean up variables
     $link_img = NULL;
     $link_title = NULL;
     $link_url = NULL;
@@ -45,12 +45,12 @@ function opengraph($atts, $content = null) {
         $graph = OpenGraph::fetch($content);
 
         /*
-        //Ausgabe des Arrays
+        //Output of the array
         var_dump($graph->keys());
         var_dump($graph->schema);
 
 
-        //Testausgabe auf der Website
+        //Test output on the website
         foreach ($graph as $key => $value) {
             echo "<p>$key => $value</p>";
         }
@@ -98,20 +98,20 @@ function opengraph($atts, $content = null) {
     }
 
 
-    //fehlende bzw. leere Variablen ersetzen
+    //Replace missing or empty variables
 
-    //falls link url fehlt
+    //if link url is missing
     if ($link_url == NULL || $link_url == "") {
         $link_url = "http://" . $content;
     } elseif (strpos($link_url, "http") === false && strpos($link_url, "//") === false) {
-        //http hinzufügen falls nicht vorhanden
+        //Add http if not present
         $link_url = "http://$link_url";
     }
 
 
-    //Bild
+    //image
     if ($link_img == NULL || $link_img == "") {
-        //falls kein Bild vorhanden
+        //if no picture available
         //$link_img = "/wp-content/uploads/2020/07/TEQUILIAN_placeholder_2020.png";
     } elseif (strpos($link_img, "http") === false && strpos($link_img, "//") === false) {
         //falls pfad relativ
@@ -132,25 +132,25 @@ function opengraph($atts, $content = null) {
         $link_img = "$temp_link_url" . "$temp_link_img";
     }
 
-    //falls name fehlt
+    //if name is missing
     if ($link_site_name == NULL || $link_site_name == "") {
         $link_site_name = $content;
     }
 
-    //falls beschreibung fehlt
+    //if description is missing
     if ($link_description == NULL || $link_description == "") {
         $link_description = "<span style='font-style: italic; color: grey;'>Keine Informationen verfügbar</span>";
     }
 
 
-    //Ausgabe
-    //Anfang des link div erzeugen
+    //Output
+    //Create beginning of link div
     echo "<div class='link_wrapper'><div class='link_container'>";
 
-    //Anfang des umschließenden Links erzeugen
+    //Create beginning of enclosing link
     echo "<a class='link_container-link' href='$link_url' target='_blank' rel='noopener'>";
 
-    //Bild ausgeben
+    //Output image
     if ($link_img == NULL || $link_img == "") {
         echo "<div class='link_image' style='background-size: cover; background-position: center; min-height: 100px;' >";
         echo "</div>";
@@ -160,28 +160,28 @@ function opengraph($atts, $content = null) {
     }
 
 
-    //Ende des umschließenden Links erzeugen
+    //Create end of enclosing link
     echo "</a>";
 
-    //Anfang von div für Text nach Bild
+    //Start of div for text after image
     echo "<div class='link_text'>";
 
-    //Website Titel ausgeben
+    //Output website title
     if (!($link_title == NULL or $link_title == "")) {
         echo "<p class='link_title'><a href='$link_url' target='_blank' rel='noopener'>$link_title</a></p>";
     } elseif (!($link_site_name == NULL or $link_site_name == "")) {
         echo "<p class='link_title'><a href='$link_url' target='_blank' rel='noopener'>$link_site_name</a></p>";
     }
 
-    //Website-Beschreibung ausgeben
+    //Output website description
     if (!($link_description == NULL or $link_description == "")) {
         echo "<p class='link_description'>$link_description</p>";
     }
 
-    //Ende von div für Text nach Bild
+    //End of div for text after image
     echo "</div>";
 
-    //Ende des link div erzeugen
+    //Create end of link div
     echo "</div>";
 
     /*
@@ -201,7 +201,7 @@ function opengraph($atts, $content = null) {
 	);
 	*/
     /*
-	//Website URL / META ausgeben
+	//Output website URL / META
 	echo "<div class='link_meta'>";
 	//echo "<img class='link_favicon' src='" . grap_favicon($grap_favicon) . "'>";
 	
