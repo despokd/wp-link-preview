@@ -23,7 +23,7 @@ function opengraph($atts, $content = null) {
     $link_site_name = NULL;
 
     // get required functions
-    require_once('openGraph.php');
+    require_once('inc/openGraph.php');
 
     // get new website data
     $graph = OpenGraph::fetch($content);
@@ -147,6 +147,9 @@ function opengraph($atts, $content = null) {
     echo "</div>";
 
     // create end of link div
+    echo "</div>";
+
+    // end of wrapper
     echo "</div>";
 }
 
