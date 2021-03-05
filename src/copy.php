@@ -149,8 +149,23 @@ function opengraph($atts, $content = null) {
     // create end of link div
     echo "</div>";
 
-    // end of wrapper
-    echo "</div>";
+    // output website URL / META
+    echo "<div class='link_meta'>";
+
+    if (!($link_url == NULL or $link_url == "")) {
+        echo "<p class='link_url'><a href='$link_url' target='_blank' rel='noopener'>$content</a>";
+    } else {
+        echo "<p class='link_url'>$content";
+    }
+
+    if ($link_type == NULL or $link_type == "" or $link_type == "website") {
+        echo "</p>";
+    } else {
+        // if link leads to something other than a website, e.g. a pdf document it displays it after the URL
+        echo " | <span class='link_type'>$link_type</span>";
+        echo "</p>";
+    }
+    echo "</div></div>";
 }
 
 add_shortcode('show_link', 'opengraph');
