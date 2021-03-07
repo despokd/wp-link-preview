@@ -64,9 +64,6 @@ function create_preview($atts, $content = null) {
         return $html;
     }
 
-    // show fetched content on debug mode
-    if (WP_DEBUG) $html .= '<pre>' . print_r($graph) . '</pre>';
-
     // save specific data
     foreach ($graph as $key => $value) {
         switch ($key) {
@@ -145,10 +142,10 @@ function create_preview($atts, $content = null) {
 
     // output image
     if ($link_img == NULL || $link_img == "") {
-        $html .= "<div class='link_image' style='background-size: cover; background-position: center; min-height: 100px;' >";
+        $html .= "<div class='link_image' style='background-size: cover; background-position: center; min-height: 250px;' >";
         $html .= "</div>";
     } else {
-        $html .= "<div class='link_image' style='background-image: url($link_img); background-size: cover; background-position: center; min-height: 100px;' >";
+        $html .= "<div class='link_image' style='background-image: url($link_img); background-size: cover; background-position: center; min-height: 250px;' >";
         $html .= "</div>";
     }
 
@@ -196,7 +193,8 @@ function create_preview($atts, $content = null) {
     $html .= "</div></div>";
 
 
-    return $html . "test shortcode";
+    return $html;
 }
-// check short code name
+
+
 add_shortcode('show_link', 'create_preview');
