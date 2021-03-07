@@ -28,7 +28,6 @@ defined('ABSPATH') or die('No access');
 // define plugin path
 define('PLUGIN_DIR', dirname(__FILE__));
 
-
 /**
  * Creates HTML container to display OpenGraph content
  *
@@ -192,9 +191,13 @@ function create_preview($atts, $content = null) {
     }
     $html .= "</div></div>";
 
-
+    wp_enqueue_style('preview');
     return $html;
 }
-
-
 add_shortcode('show_link', 'create_preview');
+
+
+function setup_css() {
+    wp_register_style('preview', plugins_url('/public/css/style.css', __FILE__));
+}
+add_action('wp_enqueue_scripts', 'setup_css');
