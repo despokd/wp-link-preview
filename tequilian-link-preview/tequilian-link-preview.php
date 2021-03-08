@@ -28,8 +28,9 @@ defined('ABSPATH') or die('No access');
 // define plugin path
 define('PLUGIN_DIR', dirname(__FILE__));
 
+
 /**
- * Creates HTML container to display OpenGraph content
+ * Place preview url
  *
  * @version 2.0
  * @author Kilian Domaratius
@@ -37,9 +38,38 @@ define('PLUGIN_DIR', dirname(__FILE__));
  * @param $atts
  * @param null $content
  */
-function create_preview($atts, $content = null) {
+function register_preview($atts, $content = null) {
+    return "<div class='preview_url'><p><a href='https://$content' target='_blank'>$content</a></p></div>";
+}
+add_shortcode('show_link', 'register_preview');
+
+// AJAX
+add_action('wp_enqueue_scripts', 'setup_scripts_styles');
+add_action('wp_ajax_create_preview', 'create_preview');
+add_action('wp_ajax_nopriv_create_preview', 'create_preview');
+
+/**
+ * Register JS + CSS
+ */
+function setup_scripts_styles() {
+    wp_enqueue_style('register_preview', plugins_url('/public/css/style.css', __FILE__));
+    wp_enqueue_script('register_preview', plugins_url('/public/js/script.js', __FILE__), array('jquery'));
+    wp_localize_script('register_preview', 'ajax', array('ajax_url' => admin_url('admin-ajax.php')));
+}
+
+/**
+ * Creates HTML container to display OpenGraph content
+ *
+ * @version 2.0
+ * @author Kilian Domaratius
+ *
+ */
+function create_preview() {
     // return value
     $html = '';
+
+    // request
+    $url = $_POST['url'];
 
     // declare" and clean up variables
     $link_img = NULL;
@@ -53,14 +83,16 @@ function create_preview($atts, $content = null) {
     include_once(PLUGIN_DIR . '/includes/openGraph.php');
 
     // get new website data
-    $graph = OpenGraph::fetch($content);
+    $graph = OpenGraph::fetch($url);
 
     // if no response from site
     if (!$graph) {
-        $html = "<p><a href='https://$content' target='_blank'>$content</a>";
+        $html = "<p><a href='https://$url' target='_blank'>$url</a>";
         if (WP_DEBUG) $html .= "&nbsp;<small>&times; No preview available</small>";
         $html .= '</p>';
-        return $html;
+
+        echo $html;
+        return;
     }
 
     // save specific data
@@ -97,7 +129,7 @@ function create_preview($atts, $content = null) {
 
     // if link url is missing
     if ($link_url == NULL || $link_url == "") {
-        $link_url = "http://" . $content;
+        $link_url = "http://" . $url;
     } elseif (strpos($link_url, "http") === false && strpos($link_url, "//") === false) {
         // add http if not present
         $link_url = "http://$link_url";
@@ -123,11 +155,11 @@ function create_preview($atts, $content = null) {
     }
 
     // if name is missing
-    if ($link_site_name == NULL || $link_site_name == "") $link_site_name = $content;
+    if ($link_site_name == NULL || $link_site_name == "") $link_site_name = $url;
 
     // if description is missing
     if ($link_description == NULL || $link_description == "") {
-        $link_description = "<span style='font-style: italic; color: grey;'>Keine Informationen verfügbar</span>";
+        $link_description = "<p style='font-style: italic; color: grey;'>Keine Informationen verfügbar</p>";
     }
 
 
@@ -140,13 +172,9 @@ function create_preview($atts, $content = null) {
     $html .= "<a class='link_container-link' href='$link_url' target='_blank' rel='noopener'>";
 
     // output image
-    if ($link_img == NULL || $link_img == "") {
-        $html .= "<div class='link_image' style='background-size: cover; background-position: center; min-height: 250px;' >";
-        $html .= "</div>";
-    } else {
-        $html .= "<div class='link_image' style='background-image: url($link_img); background-size: cover; background-position: center; min-height: 250px;' >";
-        $html .= "</div>";
-    }
+    $html .= "<div class='link_image'";
+    if ($link_img != NULL && $link_img != "")  $html .= " style='background-image: url($link_img);'";
+    $html .= "></div>";
 
 
     // create end of enclosing link
@@ -177,9 +205,9 @@ function create_preview($atts, $content = null) {
     $html .= "<div class='link_meta'>";
 
     if (!($link_url == NULL or $link_url == "")) {
-        $html .= "<p class='link_url'><a href='$link_url' target='_blank' rel='noopener'>$content</a>";
+        $html .= "<p class='link_url'><a href='$link_url' target='_blank' rel='noopener'>$url</a>";
     } else {
-        $html .= "<p class='link_url'>$content";
+        $html .= "<p class='link_url'>$url";
     }
 
     if ($link_type == NULL or $link_type == "" or $link_type == "website") {
@@ -191,13 +219,6 @@ function create_preview($atts, $content = null) {
     }
     $html .= "</div></div>";
 
-    wp_enqueue_style('preview');
-    return $html;
+    echo $html;
+    return;
 }
-add_shortcode('show_link', 'create_preview');
-
-
-function setup_css() {
-    wp_register_style('preview', plugins_url('/public/css/style.css', __FILE__));
-}
-add_action('wp_enqueue_scripts', 'setup_css');
