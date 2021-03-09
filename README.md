@@ -1,4 +1,4 @@
-# wp-link-preview
+# Link Preview by Tequilian
 
 Fetches a website and creates a preview with OpenGraph for WordPress
 
